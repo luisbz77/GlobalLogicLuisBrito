@@ -3,6 +3,10 @@ package com.globalLogic.structure.controller;
 import com.globalLogic.domain.model.phone.Phone;
 import com.globalLogic.domain.model.user.User;
 import com.globalLogic.domain.usescase.user.UserCase;
+import com.globalLogic.structure.response.CreateUserRequest;
+import com.globalLogic.structure.response.PhoneRequest;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -11,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -28,6 +31,8 @@ public class UserControllerTest {
 
     @MockBean
     private UserCase userCase;
+
+    private Gson gson = new GsonBuilder().create();
 
     @Test
     public void signUpTest() throws Exception {
@@ -59,21 +64,18 @@ public class UserControllerTest {
 
         when(userCase.createUser(user)).thenReturn(createdUser);
 
+        CreateUserRequest createUserRequest = new CreateUserRequest();
+        createUserRequest.setName("Usuario Global Logic");
+        createUserRequest.setEmail("usuarioglobal@globallogic.com");
+        createUserRequest.setPassword("Abc1defg");
+        createUserRequest.setPhones(Collections.singletonList(new PhoneRequest(123456789, 1, "56")));
+
+        String requestBody = gson.toJson(createUserRequest);
+
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/sign-up")
-                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\n" +
-                        "  \"name\": \"Usuario Ejemplo\",\n" +
-                        "  \"email\": \"usuario@example.com\",\n" +
-                        "  \"password\": \"Abc1defg\",\n" +
-                        "  \"phones\": [\n" +
-                        "    {\n" +
-                        "      \"number\": 123456789,\n" +
-                        "      \"citycode\": 1,\n" +
-                        "      \"countrycode\": \"57\"\n" +
-                        "    }\n" +
-                        "  ]\n" +
-                        "}"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().json("{\n" +
                         "\"id\": \"e5c6cf84-8860-4c00-91cd-22d3be28904e\",\n" +

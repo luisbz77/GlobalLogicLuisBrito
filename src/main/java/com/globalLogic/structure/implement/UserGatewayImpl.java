@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class UserGatewayImpl implements UserGateway {
 
-    private final UserRepository userRepository; // Asegúrate de inyectar el repositorio aquí
+    private final UserRepository userRepository;
 
     @Autowired
     public UserGatewayImpl(UserRepository userRepository) {

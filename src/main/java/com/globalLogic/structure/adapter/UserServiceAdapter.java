@@ -103,9 +103,9 @@ public class UserServiceAdapter implements UserGateway {
 
             Claims claims = claimsJws.getBody();
             User user = User.builder()
-                    .id(UUID.fromString(claims.getSubject())) // El ID debería estar en el subject del token
+                    .id(UUID.fromString(claims.getSubject()))
                     .created(new Timestamp(claims.getIssuedAt().getTime()))
-                    .lastLogin(new Timestamp(claims.getIssuedAt().getTime())) // Usar el mismo tiempo para lastLogin por ahora
+                    .lastLogin(new Timestamp(claims.getIssuedAt().getTime()))
                     .token(token)
                     .isActive(Boolean.parseBoolean(claims.get("isActive").toString()))
                     .name(claims.get("name", String.class))
